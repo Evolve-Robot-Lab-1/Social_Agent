@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python vs Java Comparison</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background: #f9f9f9;
+            color: #222;
+            transition: background 0.3s, color 0.3s;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+            transition: background 0.3s, color 0.3s;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        table { width: 100%; border-collapse: collapse; margin: 30px 0; }
+        th, td { border: 1px solid #ddd; padding: 14px; text-align: left; }
+        th { /* background: #eaf1fb; */ }
+        tr:nth-child(even) { /* background: #f4f8fb; */ }
+        .summary, .conclusion { /* background: #f0f7e6; color: #222; */ padding: 20px; border-radius: 8px; margin-top: 30px; }
+        pre { /* background: #f4f4f4; color: #222; */ padding: 12px; border-radius: 6px; overflow-x: auto; }
+        .logo { height: 60px; vertical-align: middle; margin-right: 16px; }
+        .section-img { display: block; margin: 20px auto; max-width: 300px; border-radius: 8px; }
+        .theme-selector-box { position: absolute; top: 24px; right: 60px; z-index: 10; text-align: right; }
+        .editable-img-wrapper {
+            display: block;
+            position: relative;
+            margin: 16px auto;
+            vertical-align: top;
+            z-index: 2;
+            text-align: left;
+            min-width: 40px;
+            min-height: 40px;
+        }
+        .editable-img {
+            max-width: 300px;
+            min-width: 40px;
+            min-height: 40px;
+            width: 120px;
+            height: auto;
+            border: 2px dashed #bbb;
+            border-radius: 8px;
+            background: #fff;
+            box-sizing: border-box;
+            transition: box-shadow 0.2s, border 0.2s;
+            display: block;
+            margin: 0 auto 0 0;
+        }
+        .editable-img.editing {
+            border: 2px solid #007ACC;
+            box-shadow: 0 0 0 3px #007acc33;
+        }
+        .drag-over {
+            outline: 2px dashed #007ACC;
+            background: #e3f2fd;
+        }
+        .resize-handle {
+            position: absolute;
+            width: 14px;
+            height: 14px;
+            background: #007ACC;
+            border-radius: 50%;
+            z-index: 3;
+        }
+        .resize-handle.nw { left: -7px; top: -7px; cursor: nwse-resize; }
+        .resize-handle.ne { right: -7px; top: -7px; cursor: nesw-resize; }
+        .resize-handle.sw { left: -7px; bottom: -7px; cursor: nesw-resize; }
+        .resize-handle.se { right: -7px; bottom: -7px; cursor: nwse-resize; }
+        .delete-btn {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: #e74c3c;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            font-size: 16px;
+            cursor: pointer;
+            z-index: 4;
+        }
+        .insert-btn {
+            display: inline-block;
+            margin: 16px 0;
+            padding: 8px 18px;
+            background: #007ACC;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            cursor: pointer;
+        }
+        #fileInput { display: none; }
+        .align-controls {
+            position: absolute;
+            left: 0;
+            bottom: -28px;
+            z-index: 5;
+            display: none;
+            gap: 4px;
+        }
+        .editable-img-wrapper:hover .align-controls {
+            display: flex;
+        }
+        .align-btn {
+            background: #eee;
+            border: 1px solid #bbb;
+            border-radius: 4px;
+            padding: 2px 7px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        .align-btn.active {
+            background: #007ACC;
+            color: #fff;
+            border-color: #007ACC;
+        }
+        .editable-text[contenteditable="true"] {
+            outline: 2px dashed #007ACC;
+            background: #f0f7ff;
+            min-height: 1em;
+        }
+        .edit-toggle-btn {
+            display: inline-block;
+            margin: 16px 8px 16px 0;
+            padding: 8px 18px;
+            background: #007ACC;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            cursor: pointer;
+        }
+    </style>
+    <script>
+        const themes = {
+            'minimal-white': { background: '#FFFFFF', text: '#333333', accent: '#007ACC', font: 'Helvetica Neue, sans-serif', container: '#fff', box: '#f0f7e6', code: '#f4f4f4', tableHeader: '#eaf1fb', tableRow: '#f4f8fb' },
+            'soft-cream': { background: '#FFF9F0', text: '#4B4B4B', accent: '#E27D60', font: 'Georgia, serif', container: '#fff', box: '#fff3e0', code: '#f9e4d4', tableHeader: '#ffe0b2', tableRow: '#fff8e1' },
+            'pastel-blue-sky': { background: '#E0F7FA', text: '#1A1A1A', accent: '#00BCD4', font: 'Lato, sans-serif', container: '#fff', box: '#b2ebf2', code: '#e0f2f1', tableHeader: '#b2ebf2', tableRow: '#e0f7fa' },
+            'paper-sheet': { background: '#FDFDFD', text: '#2F4F4F', accent: '#FFA07A', font: 'Merriweather, serif', container: '#fff', box: '#f5f5f5', code: '#fdf6e3', tableHeader: '#ffe4c4', tableRow: '#f5f5dc' },
+            'elegant-ivory': { background: '#F8F1E5', text: '#3E3E3E', accent: '#AC3B61', font: 'Playfair Display, serif', container: '#fff', box: '#f3e9dc', code: '#f8f1e5', tableHeader: '#f3e9dc', tableRow: '#f8f1e5' },
+            'monochrome-black': { background: '#121212', text: '#E0E0E0', accent: '#BB86FC', font: 'Roboto Mono, monospace', container: '#232323', box: '#232323', code: '#181818', tableHeader: '#232323', tableRow: '#181818' },
+            'nightfall-blue': { background: '#1A1C2C', text: '#F8F8F2', accent: '#6272A4', font: 'Open Sans, sans-serif', container: '#23253a', box: '#23253a', code: '#1a1c2c', tableHeader: '#23253a', tableRow: '#1a1c2c' },
+            'charcoal-gray': { background: '#2E2E2E', text: '#EEEEEE', accent: '#FF5722', font: 'Nunito, sans-serif', container: '#393939', box: '#393939', code: '#232323', tableHeader: '#393939', tableRow: '#232323' },
+            'solarized-dark': { background: '#002B36', text: '#839496', accent: '#268BD2', font: 'Fira Code, monospace', container: '#073642', box: '#073642', code: '#002b36', tableHeader: '#073642', tableRow: '#002b36' },
+            'midnight-tech': { background: '#0D0D0D', text: '#CCCCCC', accent: '#00FFAA', font: 'Source Code Pro, monospace', container: '#181818', box: '#181818', code: '#0d0d0d', tableHeader: '#181818', tableRow: '#0d0d0d' },
+            'deep-space': { background: '#181A20', text: '#E5E5E5', accent: '#00BFFF', font: 'Montserrat, sans-serif', container: '#23252b', box: '#23252b', code: '#181a20', tableHeader: '#23252b', tableRow: '#181a20' },
+            'forest-night': { background: '#222D24', text: '#C8E6C9', accent: '#388E3C', font: 'Poppins, sans-serif', container: '#26332a', box: '#26332a', code: '#222d24', tableHeader: '#26332a', tableRow: '#222d24' },
+            'purple-haze': { background: '#2D193C', text: '#E1BEE7', accent: '#8E24AA', font: 'Raleway, sans-serif', container: '#3a2352', box: '#3a2352', code: '#2d193c', tableHeader: '#3a2352', tableRow: '#2d193c' },
+            'cyberpunk': { background: '#0F1021', text: '#F5F5F5', accent: '#FF2E63', font: 'Share Tech Mono, monospace', container: '#23243a', box: '#23243a', code: '#0f1021', tableHeader: '#23243a', tableRow: '#0f1021' },
+            'slate-gray': { background: '#23272A', text: '#99AAB5', accent: '#7289DA', font: 'Segoe UI, sans-serif', container: '#2c2f33', box: '#2c2f33', code: '#23272a', tableHeader: '#2c2f33', tableRow: '#23272a' },
+            'neon-pop': { background: '#1A1A2E', text: '#E94560', accent: '#0F3460', font: 'Orbitron, sans-serif', container: '#23234a', box: '#23234a', code: '#1a1a2e', tableHeader: '#23234a', tableRow: '#1a1a2e' },
+            'gradient-sunrise': { background: 'linear-gradient(to right, #FF512F, #F09819)', text: '#FFFFFF', accent: '#FFDD00', font: 'Quicksand, sans-serif', container: 'rgba(255,255,255,0.85)', box: 'rgba(255,255,255,0.85)', code: '#ffb347', tableHeader: 'rgba(255,255,255,0.85)', tableRow: '#ffb347' },
+            'retro-90s': { background: '#FCE77D', text: '#3A3A3A', accent: '#EE4266', font: 'Comic Sans MS, cursive', container: '#fffbe6', box: '#fffbe6', code: '#fce77d', tableHeader: '#fffbe6', tableRow: '#fce77d' },
+            'oceanic-blue': { background: '#0077B6', text: '#CAF0F8', accent: '#00B4D8', font: 'Ubuntu, sans-serif', container: '#0096c7', box: '#0096c7', code: '#0077b6', tableHeader: '#0096c7', tableRow: '#0077b6' },
+            'muted-earth-tones': { background: '#D8C3A5', text: '#2E282A', accent: '#E98074', font: 'PT Serif, serif', container: '#eae7dc', box: '#eae7dc', code: '#d8c3a5', tableHeader: '#eae7dc', tableRow: '#d8c3a5' }
+        };
+        function changeTheme(sel) {
+            const theme = themes[sel.value];
+            if (!theme) return;
+            if (theme.background.startsWith('linear-gradient')) {
+                document.body.style.background = theme.background;
+            } else {
+                document.body.style.background = theme.background;
+            }
+            document.body.style.color = theme.text;
+            document.body.style.fontFamily = theme.font;
+            const container = document.querySelector('.container');
+            if (container) {
+                container.style.background = theme.container;
+                container.style.color = theme.text;
+                container.style.fontFamily = theme.font;
+            }
+            const headings = document.querySelectorAll('h1, h2, h3');
+            headings.forEach(h => h.style.color = theme.accent);
+            // Update summary, conclusion, pre, th, tr backgrounds and text
+            document.querySelectorAll('.summary, .conclusion').forEach(e => {
+                e.style.background = theme.box;
+                e.style.color = theme.text;
+            });
+            document.querySelectorAll('pre').forEach(e => {
+                e.style.background = theme.code;
+                e.style.color = theme.text;
+            });
+            document.querySelectorAll('th').forEach(e => {
+                e.style.background = theme.tableHeader;
+                e.style.color = theme.text;
+            });
+            document.querySelectorAll('tr').forEach((e, i) => {
+                if (i === 0) return; // skip header row
+                e.style.background = theme.tableRow;
+                e.style.color = theme.text;
+            });
+        }
+        window.onload = function() {
+            document.getElementById('theme-select').value = 'minimal-white';
+            changeTheme(document.getElementById('theme-select'));
+        };
+    // --- Editable Images ---
+    function makeEditableImage(wrapper) {
+        const img = wrapper.querySelector('img');
+        const handles = wrapper.querySelectorAll('.resize-handle');
+        const alignControls = wrapper.querySelector('.align-controls');
+        let isResizing = false, startX, startY, startWidth, startHeight, currentHandle;
+
+        // Alignment controls
+        alignControls.querySelectorAll('.align-btn').forEach(function(btn) {
+            btn.onclick = function() {
+                alignControls.querySelectorAll('.align-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                if (btn.dataset.align === 'left') {
+                    wrapper.style.textAlign = 'left';
+                    img.style.margin = '0 auto 0 0';
+                } else if (btn.dataset.align === 'center') {
+                    wrapper.style.textAlign = 'center';
+                    img.style.margin = '0 auto';
+                } else if (btn.dataset.align === 'right') {
+                    wrapper.style.textAlign = 'right';
+                    img.style.margin = '0 0 0 auto';
+                }
+            };
+        });
+
+        // No drag logic, only alignment
+        img.onmousedown = null;
+
+        // Resize (all four corners)
+        handles.forEach(function(handle) {
+            handle.onmousedown = function(e) {
+                isResizing = true;
+                currentHandle = handle;
+                startX = e.clientX;
+                startY = e.clientY;
+                startWidth = img.offsetWidth;
+                startHeight = img.offsetHeight;
+                img.classList.add('editing');
+                e.stopPropagation();
+                e.preventDefault();
+            };
+        });
+        document.addEventListener('mousemove', function(e) {
+            if (isResizing && currentHandle) {
+                let dx = e.clientX - startX;
+                let dy = e.clientY - startY;
+                let newWidth = startWidth, newHeight = startHeight;
+                if (currentHandle.classList.contains('se')) {
+                    newWidth = Math.max(40, startWidth + dx);
+                    newHeight = Math.max(40, startHeight + dy);
+                } else if (currentHandle.classList.contains('sw')) {
+                    newWidth = Math.max(40, startWidth - dx);
+                    newHeight = Math.max(40, startHeight + dy);
+                } else if (currentHandle.classList.contains('ne')) {
+                    newWidth = Math.max(40, startWidth + dx);
+                    newHeight = Math.max(40, startHeight - dy);
+                } else if (currentHandle.classList.contains('nw')) {
+                    newWidth = Math.max(40, startWidth - dx);
+                    newHeight = Math.max(40, startHeight - dy);
+                }
+                img.style.width = newWidth + 'px';
+                img.style.height = newHeight + 'px';
+            }
+        });
+        document.addEventListener('mouseup', function() {
+            if (isResizing) img.classList.remove('editing');
+            isResizing = false;
+            currentHandle = null;
+        });
+        // Delete
+        wrapper.querySelector('.delete-btn').onclick = function() {
+            wrapper.remove();
+        };
+    }
+    function makeDraggable(wrapper) {
+        wrapper.setAttribute('draggable', 'true');
+        wrapper.ondragstart = function(e) {
+            e.dataTransfer.effectAllowed = 'move';
+            window._draggedImage = wrapper;
+            setTimeout(() => wrapper.style.opacity = '0.5', 0);
+        };
+        wrapper.ondragend = function() {
+            window._draggedImage = null;
+            wrapper.style.opacity = '';
+            document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+        };
+        wrapper.ondragover = function(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            wrapper.classList.add('drag-over');
+        };
+        wrapper.ondragleave = function() {
+            wrapper.classList.remove('drag-over');
+        };
+        wrapper.ondrop = function(e) {
+            e.preventDefault();
+            wrapper.classList.remove('drag-over');
+            const dragged = window._draggedImage;
+            if (dragged && dragged !== wrapper) {
+                wrapper.parentNode.insertBefore(dragged, wrapper.nextSibling);
+            }
+        };
+    }
+    function wrapAllEditableImages() {
+        document.querySelectorAll('img.logo, .section-img').forEach(function(img) {
+            if (img.closest('.editable-img-wrapper')) return;
+            const wrapper = document.createElement('div');
+            wrapper.className = 'editable-img-wrapper';
+            img.classList.add('editable-img');
+            img.parentNode.insertBefore(wrapper, img);
+            wrapper.appendChild(img);
+            // Add four resize handles
+            ['nw','ne','sw','se'].forEach(pos => {
+                const handle = document.createElement('div');
+                handle.className = 'resize-handle ' + pos;
+                wrapper.appendChild(handle);
+            });
+            // Add delete button
+            const del = document.createElement('button');
+            del.className = 'delete-btn';
+            del.innerHTML = '&times;';
+            wrapper.appendChild(del);
+            // Add align controls
+            const alignControls = document.createElement('div');
+            alignControls.className = 'align-controls';
+            alignControls.innerHTML = `
+                <button class="align-btn" data-align="left" title="Align Left">⯇</button>
+                <button class="align-btn" data-align="center" title="Align Center">☰</button>
+                <button class="align-btn" data-align="right" title="Align Right">⯈</button>
+            `;
+            alignControls.querySelector('.align-btn[data-align="left"]').classList.add('active');
+            wrapper.appendChild(alignControls);
+            makeEditableImage(wrapper);
+            makeDraggable(wrapper);
+        });
+    }
+    // Utility to insert a node at the caret position in a contenteditable element
+    function insertNodeAtCaret(node) {
+        let sel = window.getSelection();
+        if (sel.rangeCount && sel.getRangeAt) {
+            let range = sel.getRangeAt(0);
+            range.collapse(false);
+            range.insertNode(node);
+            // Move caret after the inserted node
+            range.setStartAfter(node);
+            range.setEndAfter(node);
+            sel.removeAllRanges();
+            sel.addRange(range);
+        } else {
+            // fallback: append to container
+            const container = document.querySelector('.container');
+            container.appendChild(node);
+        }
+    }
+    function insertImageFromDevice(file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.alt = 'Inserted Image';
+            img.className = 'editable-img';
+            const wrapper = document.createElement('div');
+            wrapper.className = 'editable-img-wrapper';
+            wrapper.style.display = 'block';
+            wrapper.appendChild(img);
+            // Add four resize handles
+            ['nw','ne','sw','se'].forEach(pos => {
+                const handle = document.createElement('div');
+                handle.className = 'resize-handle ' + pos;
+                wrapper.appendChild(handle);
+            });
+            // Add delete button
+            const del = document.createElement('button');
+            del.className = 'delete-btn';
+            del.innerHTML = '&times;';
+            wrapper.appendChild(del);
+            // Add align controls
+            const alignControls = document.createElement('div');
+            alignControls.className = 'align-controls';
+            alignControls.innerHTML = `
+                <button class="align-btn" data-align="left" title="Align Left">⯇</button>
+                <button class="align-btn" data-align="center" title="Align Center">☰</button>
+                <button class="align-btn" data-align="right" title="Align Right">⯈</button>
+            `;
+            alignControls.querySelector('.align-btn[data-align="left"]').classList.add('active');
+            wrapper.appendChild(alignControls);
+            makeEditableImage(wrapper);
+            makeDraggable(wrapper);
+            // Insert at caret position in focused editable-text, or at end of container
+            let active = document.activeElement;
+            if (active && active.classList && active.classList.contains('editable-text')) {
+                // Insert as block after caret
+                // Split the text node if caret is in the middle
+                let sel = window.getSelection();
+                if (sel.rangeCount) {
+                    let range = sel.getRangeAt(0);
+                    range.collapse(false);
+                    // If caret is inside a text node, split it
+                    if (range.startContainer.nodeType === 3) {
+                        let textNode = range.startContainer;
+                        let afterText = textNode.splitText(range.startOffset);
+                        let parent = textNode.parentNode;
+                        parent.insertBefore(wrapper, afterText);
+                    } else {
+                        // Otherwise, insert after the current node
+                        if (range.endContainer === active) {
+                            // Insert as child
+                            if (range.endOffset < active.childNodes.length) {
+                                active.insertBefore(wrapper, active.childNodes[range.endOffset]);
+                            } else {
+                                active.appendChild(wrapper);
+                            }
+                        } else {
+                            // Insert after the node
+                            range.endContainer.parentNode.insertBefore(wrapper, range.endContainer.nextSibling);
+                        }
+                    }
+                } else {
+                    active.appendChild(wrapper);
+                }
+            } else {
+                // fallback: append to container
+                const container = document.querySelector('.container');
+                container.appendChild(wrapper);
+            }
+        };
+        reader.readAsDataURL(file);
+    }
+    function insertImage() {
+        document.getElementById('fileInput').click();
+    }
+    function setTextEditableMode(enabled) {
+        document.querySelectorAll('.editable-text').forEach(function(el) {
+            el.contentEditable = enabled ? 'true' : 'false';
+        });
+    }
+    window.addEventListener('DOMContentLoaded', function() {
+        wrapAllEditableImages();
+        // Insert button
+        const btn = document.createElement('button');
+        btn.className = 'insert-btn';
+        btn.textContent = 'Insert Image';
+        btn.onclick = insertImage;
+        document.body.insertBefore(btn, document.body.firstChild);
+        // File input for device images
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = 'image/*';
+        fileInput.id = 'fileInput';
+        fileInput.onchange = function(e) {
+            if (e.target.files && e.target.files[0]) {
+                insertImageFromDevice(e.target.files[0]);
+            }
+        };
+        document.body.appendChild(fileInput);
+        // Add edit toggle button
+        const editBtn = document.createElement('button');
+        editBtn.className = 'edit-toggle-btn';
+        editBtn.textContent = 'Enable Text Editing';
+        let editing = false;
+        editBtn.onclick = function() {
+            editing = !editing;
+            setTextEditableMode(editing);
+            editBtn.textContent = editing ? 'Disable Text Editing' : 'Enable Text Editing';
+        };
+        document.body.insertBefore(editBtn, document.body.firstChild.nextSibling);
+        setTextEditableMode(false);
+    });
+    </script>
+    <div class="theme-selector-box">
+        <label for="theme-select" style="font-weight:bold;">Theme: </label>
+        <select id="theme-select" onchange="changeTheme(this)">
+            <optgroup label="🌞 Light Themes">
+                <option value="minimal-white">Minimal White</option>
+                <option value="soft-cream">Soft Cream</option>
+                <option value="pastel-blue-sky">Pastel Blue Sky</option>
+                <option value="paper-sheet">Paper Sheet</option>
+                <option value="elegant-ivory">Elegant Ivory</option>
+            </optgroup>
+            <optgroup label="🌙 Dark Themes">
+                <option value="monochrome-black">Monochrome Black</option>
+                <option value="nightfall-blue">Nightfall Blue</option>
+                <option value="charcoal-gray">Charcoal Gray</option>
+                <option value="solarized-dark">Solarized Dark</option>
+                <option value="midnight-tech">Midnight Tech</option>
+                <option value="deep-space">Deep Space</option>
+                <option value="forest-night">Forest Night</option>
+                <option value="purple-haze">Purple Haze</option>
+                <option value="cyberpunk">Cyberpunk</option>
+                <option value="slate-gray">Slate Gray</option>
+            </optgroup>
+            <optgroup label="🌈 Multi-Color Themes">
+                <option value="neon-pop">Neon Pop</option>
+                <option value="gradient-sunrise">Gradient Sunrise</option>
+                <option value="retro-90s">Retro 90s</option>
+                <option value="oceanic-blue">Oceanic Blue</option>
+                <option value="muted-earth-tones">Muted Earth Tones</option>
+            </optgroup>
+        </select>
+    </div>
+</head>
+<body>
+    <div class="container">
+        <h1 class="editable-text">Python vs Java: A Comprehensive Comparison</h1>
+
+        <h2 class="editable-text">Introduction</h2>
+        <p class="editable-text">
+            Python and Java are two of the most widely used programming languages in the world. Both have stood the test of time and are used in a variety of domains, from web development to data science and enterprise applications. This comparison explores their features, use cases, and what developers think about them.
+        </p>
+
+        <h2 class="editable-text">What is Python?</h2>
+        <img src="python_logo.png" alt="Python Logo" class="logo">
+        <p class="editable-text">
+            <strong>Python</strong> is a high-level, interpreted programming language known for its simple, readable syntax and versatility. Created by Guido van Rossum and first released in 1991, Python emphasizes code readability and rapid development.
+        </p>
+        <h3 class="editable-text">Applications of Python</h3>
+        <ul class="editable-text">
+            <li>Web development (Django, Flask)</li>
+            <li>Data science and machine learning (pandas, NumPy, scikit-learn, TensorFlow)</li>
+            <li>Automation and scripting</li>
+            <li>Desktop applications</li>
+            <li>Game development</li>
+            <li>Internet of Things (IoT)</li>
+        </ul>
+
+        <h2 class="editable-text">What is Java?</h2>
+        <img src="java_logo.png" alt="Java Logo" class="logo">
+        <p class="editable-text">
+            <strong>Java</strong> is a high-level, class-based, object-oriented programming language designed to have as few implementation dependencies as possible. Developed by Sun Microsystems (now Oracle) and released in 1995, Java is known for its portability across platforms via the Java Virtual Machine (JVM).
+        </p>
+        <h3 class="editable-text">Applications of Java</h3>
+        <ul class="editable-text">
+            <li>Enterprise applications (banking, insurance, etc.)</li>
+            <li>Android app development</li>
+            <li>Web applications (Spring, Java EE)</li>
+            <li>Big data technologies (Hadoop, Apache Spark)</li>
+            <li>Embedded systems</li>
+            <li>Scientific applications</li>
+        </ul>
+
+        <h2 class="editable-text">Frontend and Backend Development</h2>
+        <img src="frontend_backend.png" alt="Frontend and Backend Illustration" class="section-img">
+        <p class="editable-text">
+            <strong>Python</strong> is primarily used for backend development, powering server-side logic in web applications. Frameworks like Django and Flask make backend development straightforward. While Python can be used for frontend development (e.g., with PyScript or Brython), it is not common practice.<br><br>
+            <strong>Java</strong> is also mainly used for backend development, especially in large-scale enterprise systems. Java frameworks like Spring and Java EE are popular for building robust backend services. Java applets were once used for frontend, but this is now obsolete; Java is rarely used for modern frontend development.
+        </p>
+
+        <h2 class="editable-text">Sample Code</h2>
+        <h3 class="editable-text">Python Example: Hello World</h3>
+        <pre class="editable-text">print("Hello, World!")</pre>
+        <h3 class="editable-text">Java Example: Hello World</h3>
+        <pre class="editable-text">public class HelloWorld {
+    public static void main(String[] args) {
+        System.out.println("Hello, World!");
+    }
+}</pre>
+
+        <h2 class="editable-text">Comparison Table</h2>
+        <table class="editable-text">
+            <tr>
+                <th>Feature</th>
+                <th>Python</th>
+                <th>Java</th>
+            </tr>
+            <tr>
+                <td>Ease of Use</td>
+                <td>Very easy to learn and use; concise and readable syntax.</td>
+                <td>Moderately easy; more verbose syntax, but well-structured.</td>
+            </tr>
+            <tr>
+                <td>Performance</td>
+                <td>Generally slower due to dynamic typing and interpreted nature.</td>
+                <td>Faster execution due to static typing and compiled bytecode.</td>
+            </tr>
+            <tr>
+                <td>Frontend Development</td>
+                <td>Rarely used; possible with PyScript/Brython but not common.</td>
+                <td>Rarely used; Java applets are obsolete.</td>
+            </tr>
+            <tr>
+                <td>Backend Development</td>
+                <td>Very popular (Django, Flask).</td>
+                <td>Very popular (Spring, Java EE).</td>
+            </tr>
+            <tr>
+                <td>Supported Platforms</td>
+                <td>Cross-platform (Windows, macOS, Linux, etc.)</td>
+                <td>Cross-platform (Write Once, Run Anywhere via JVM)</td>
+            </tr>
+            <tr>
+                <td>Key Applications</td>
+                <td>Data science, web development, automation, scripting.</td>
+                <td>Enterprise apps, Android, web apps, big data.</td>
+            </tr>
+            <tr>
+                <td>Community Support</td>
+                <td>Very large and active.</td>
+                <td>Very large and active.</td>
+            </tr>
+            <tr>
+                <td>Pros</td>
+                <td>Simple syntax, rapid development, versatile, great for prototyping and automation.</td>
+                <td>High performance, robust, scalable, strong type safety, excellent for large systems.</td>
+            </tr>
+            <tr>
+                <td>Cons</td>
+                <td>Slower execution, not ideal for mobile development, dynamic typing can lead to runtime errors.</td>
+                <td>More verbose code, slower startup time, less suited for quick scripting tasks.</td>
+            </tr>
+        </table>
+
+        <h2 class="editable-text">What Developers Think</h2>
+        <p class="editable-text">
+            Many developers appreciate <strong>Python</strong> for its simplicity and speed of development, making it a top choice for beginners, data scientists, and those who value productivity. Its syntax is often described as intuitive and close to natural language.<br><br>
+            <strong>Java</strong> is favored by developers working on large, complex, and performance-critical systems. Its static typing and strong object-oriented principles are valued in enterprise environments. Java developers often highlight its reliability, scalability, and the vast ecosystem of libraries and frameworks.
+        </p>
+
+        <h2 class="editable-text">Conclusion</h2>
+        <div class="conclusion">
+            <p class="editable-text">
+                Both Python and Java are powerful, versatile languages with strong communities and extensive libraries. Python is ideal for rapid development, data science, and scripting, while Java excels in large-scale, high-performance, and enterprise applications. The best choice depends on your project needs, team expertise, and long-term goals., versatile languages with strong communities and extensive libraries. <br><br>
+                <strong>Python</strong> is best suited for:
+                <ul class="editable-text">
+                    <li>Beginners who want to learn programming quickly</li>
+                    <li>Data scientists, researchers, and those working in AI/ML</li>
+                    <li>Developers focused on rapid prototyping, scripting, or automation</li>
+                    <li>Web developers using frameworks like Django or Flask</li>
+                </ul>
+                <strong>Java</strong> is best suited for:
+                <ul class="editable-text">
+                    <li>Developers building large-scale, high-performance, or enterprise applications</li>
+                    <li>Android app developers</li>
+                    <li>Teams that require strong type safety and robust architecture</li>
+                    <li>Organizations needing long-term support and scalability</li>
+                </ul>
+                The best choice depends on your project needs, team expertise, and long-term goals.
+            </p>
+        </div>
+    </div>
+</body>
+</html> 

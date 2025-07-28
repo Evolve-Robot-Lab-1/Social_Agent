@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Modern Wellness: Balancing Physical and Mental Health</title>
+    <style>
+        body {
+            background: #10181a;
+            color: #e0f7fa;
+            font-family: 'Helvetica Neue', 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+        .health-container {
+            max-width: 900px;
+            margin: 40px auto;
+            background: #16282a;
+            border-radius: 18px;
+            box-shadow: 0 8px 40px #000a, 0 2px 8px #0004;
+            padding: 2.5rem 2.5rem 2rem 2.5rem;
+        }
+        h1, h2, h3 {
+            color: #7ee8fa;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+        }
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.7em;
+        }
+        h2 {
+            font-size: 1.4rem;
+            margin-top: 2.2em;
+            margin-bottom: 0.7em;
+        }
+        .meta {
+            color: #7ee8fa;
+            font-size: 1.08rem;
+            margin-bottom: 2.2em;
+        }
+        .featured-img {
+            width: 100%;
+            border-radius: 12px;
+            margin-bottom: 2.2em;
+            box-shadow: 0 2px 16px #000a;
+        }
+        .section-img {
+            width: 100%;
+            border-radius: 10px;
+            margin: 1.5em 0 1.5em 0;
+            box-shadow: 0 2px 12px #0005;
+        }
+        .split-section {
+            display: flex;
+            gap: 2.5em;
+            align-items: center;
+            margin: 2.5em 0;
+        }
+        .split-section.image-left { flex-direction: row-reverse; }
+        .split-section img {
+            width: 45%;
+            border-radius: 10px;
+            box-shadow: 0 2px 12px #0005;
+        }
+        .split-section .content { width: 55%; }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5em;
+            margin: 2em 0;
+        }
+        .stat-card {
+            background: #1e2a2a;
+            border-radius: 10px;
+            padding: 1.2em 1em;
+            color: #e0f7fa;
+            box-shadow: 0 2px 8px #0003;
+            text-align: center;
+        }
+        .stat-title {
+            color: #7ee8fa;
+            font-weight: bold;
+            margin-bottom: 0.5em;
+        }
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #b2fefa;
+        }
+        .stat-description {
+            color: #7ee8fa;
+            font-size: 0.98em;
+        }
+        a { color: #7ee8fa; }
+        @media (max-width: 700px) {
+            .health-container { padding: 1em; }
+            .split-section { flex-direction: column !important; gap: 1em; }
+            .split-section img, .split-section .content { width: 100%; }
+            .stats-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+<div class="health-container">
+    <h1>Modern Wellness: Balancing Physical and Mental Health</h1>
+    <div class="meta">By Dr. Sarah Johnson | April 3, 2024 | 9 min read</div>
+    <img src="cover.jpg" alt="Person meditating in a peaceful natural setting" class="featured-img">
+    <div>The concept of wellness has evolved significantly in recent years, shifting from merely the absence of illness to a more holistic understanding that encompasses physical, mental, and emotional well-being. This integrated approach recognizes that true health requires attention to multiple interconnected dimensions of our lives.</div>
+    <img src="cover.jpg" alt="Person meditating in a peaceful natural setting" class="section-img">
+    <h2>The Science of Stress Management</h2>
+    <div>Chronic stress has been linked to numerous health conditions, from cardiovascular disease to immune system suppression. Recent research has revealed significant insights into effective stress management techniques that can mitigate these negative effects. Practices like mindfulness meditation have been shown to reduce cortisol levels and decrease inflammatory markers in the body, offering physiological benefits alongside psychological relief.</div>
+    <img src="brain_scan.jpg" alt="Brain scan showing neural activity during meditation" class="section-img">
+    <h2>Nutrition for Optimal Brain Function</h2>
+    <div>The connection between diet and cognitive health continues to be an area of intense scientific interest. Emerging research suggests that diets rich in omega-3 fatty acids, antioxidants, and anti-inflammatory compounds can support brain health and potentially reduce the risk of cognitive decline. The Mediterranean and MIND diets, which emphasize fruits, vegetables, whole grains, and healthy fats, have shown particular promise in supporting long-term brain health.</div>
+    <div class="split-section image-left">
+        <div class="content">
+            <h2>Brain-Healthy Foods</h2>
+            <div>Specific nutrients like flavonoids (found in berries and dark chocolate), choline (found in eggs and certain vegetables), and vitamin E (abundant in nuts and seeds) have been identified as particularly beneficial for neural protection and optimal brain function throughout the lifespan.</div>
+        </div>
+        <img src="brain_food.jpg" alt="Colorful plate of brain-healthy foods including salmon, blueberries, and leafy greens">
+    </div>
+    <h2>Movement as Medicine</h2>
+    <div>Physical activity has been described as 'the closest thing we have to a wonder drug,' and the scientific evidence supports this characterization. Beyond cardiovascular benefits, regular exercise has been shown to improve mood, reduce anxiety, enhance cognitive function, and even promote cellular health through mechanisms like improved mitochondrial function and increased production of brain-derived neurotrophic factor (BDNF).</div>
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-title">Mortality Risk</div>
+            <div class="stat-value">30%</div>
+            <div class="stat-description">Reduction with regular exercise</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-title">Cognitive Function</div>
+            <div class="stat-value">20%</div>
+            <div class="stat-description">Improvement in memory tests</div>
+        </div>
+    </div>
+</div>
+</body>
+</html> 
